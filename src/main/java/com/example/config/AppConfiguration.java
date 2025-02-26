@@ -1,6 +1,6 @@
 package com.example.config;
 
-import io.dropwizard.Configuration;
+import io.dropwizard.core.Configuration;
 
 public class AppConfiguration extends Configuration {
     // Add custom configuration properties if needed
