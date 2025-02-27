@@ -1,6 +1,7 @@
 package com.example.api;
 
-import com.example.service.OrcidValidator;
+import com.example.service.OrcidFormatValidator;
+import com.example.service.OrcidApiService;
 
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
@@ -13,24 +14,26 @@ import java.util.Optional;
 @Path("/orcid")
 @Produces(MediaType.APPLICATION_JSON)
 public class OrcidResource {
-    private final OrcidValidator validator;
+    private final OrcidFormatValidator formatValidator;
+    private final OrcidApiService apiService;
 
     @Inject
-    public OrcidResource(OrcidValidator validator) {
-        this.validator = validator;
+    public OrcidResource(OrcidFormatValidator formatValidator, OrcidApiService apiService) {
+        this.formatValidator = formatValidator;
+        this.apiService = apiService;
     }
 
     @GET
     @Path("/validate/{orcid}")
     public Response validateOrcid(@PathParam("orcid") String orcid) {
         try {
-            boolean isValid = validator.isValid(orcid);
+            boolean isValid = formatValidator.isValid(orcid);
             Map<String, Object> response = new HashMap<>();
             response.put("orcid", orcid);
             response.put("valid", isValid);
             
             if (isValid) {
-                Optional<String> fullName = validator.getFullName(orcid);
+                Optional<String> fullName = apiService.getFullName(orcid);
                 fullName.ifPresent(name -> response.put("fullName", name));
             }
 
