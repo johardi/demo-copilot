@@ -7,6 +7,8 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import java.util.Map;
+import java.util.HashMap;
+import java.util.Optional;
 
 @Path("/orcid")
 @Produces(MediaType.APPLICATION_JSON)
@@ -23,10 +25,16 @@ public class OrcidResource {
     public Response validateOrcid(@PathParam("orcid") String orcid) {
         try {
             boolean isValid = validator.isValid(orcid);
-            return Response.ok(Map.of(
-                "orcid", orcid,
-                "valid", isValid
-            )).build();
+            Map<String, Object> response = new HashMap<>();
+            response.put("orcid", orcid);
+            response.put("valid", isValid);
+            
+            if (isValid) {
+                Optional<String> fullName = validator.getFullName(orcid);
+                fullName.ifPresent(name -> response.put("fullName", name));
+            }
+
+            return Response.ok(response).build();
         } catch (Exception e) {
             return Response.status(Response.Status.BAD_REQUEST)
                 .entity(Map.of("error", "Invalid ORCID format"))
