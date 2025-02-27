@@ -6,7 +6,7 @@ import dagger.Component;
 import javax.inject.Singleton;
 
 @Singleton
-@Component(modules = {OrcidModule.class})
+@Component(modules = {OrcidValidatorModule.class})
 public interface AppComponent {
     OrcidResource getOrcidResource();
 }

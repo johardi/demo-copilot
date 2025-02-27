@@ -7,7 +7,7 @@ import dagger.Provides;
 import javax.inject.Singleton;
 
 @Module
-public class OrcidModule {
+public class OrcidValidatorModule {
     @Provides
     @Singleton
     OrcidValidator provideOrcidValidator() {
